@@ -1,0 +1,50 @@
+/* 
+
+CSS for Debt Payment Calculator
+
+*/
+header {
+	padding-top: 30px;
+	padding-bottom: 30px;
+	background: #f0f0f0;
+}
+footer {
+	padding-top: 60px;
+	padding-bottom: 60px;
+	background: #e0e0e0;
+	color: #777;
+}
+
+.accounts {
+}
+.accounts-info {
+	height: 140px;
+	overflow-y: scroll;
+}
+.add-account {
+}
+.summary {
+}
+.summary .summary-description span {
+	color: green;
+	font-weight: bold;
+}
+.payments-table {
+
+}
+.payments-table th {
+	background: #333;
+	color: #fff;
+	font-weight: normal;
+}
+
+.payments-table .fa-arrow-down {
+	color: green;
+}
+.payments-table .fa-arrow-up {
+	color: red;
+}
+
+.add-account input.decimal {
+	width: 100px;
+}
