@@ -5,19 +5,6 @@ Javascript for Debt Payment Calculator
 */
 
 
-$(function() {
-
-	$('#calculate').click(function(e){
-		e.preventDefault();
-	});
-
-	// $('#add-account').click(function(e){
-	// 	e.preventDefault();
-	// });
-
-
-});
-
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope) {
 
@@ -28,13 +15,27 @@ app.controller('myCtrl', function($scope) {
     $scope.timeToZeroDebt;
     $scope.amountSaved;
     $scope.timeSaved;
-    $scope.totalPayments    = 0;
-    $scope.totalInterest    = 0;
+    $scope.totalPayments;
+    $scope.totalInterest;
     $scope.dateZeroDebt;
+    $scope.startingMessage = "Add an account and enter a monthly payment to get started.";
 
+    $scope.loadMessage = function(message) {
+        if (message == null) {
+            message = $scope.startingMessage;
+        }
+        $scope.message = message;
+    }
 
-    $scope.calculate = function() {
+    $scope.loadMessage();
+
+    $scope.calculate = function(event) {
+
+        $scope.monthlyPayment   = parseFloat($scope.payment);
+        $scope.totalPayments    = 0;
+        $scope.totalInterest    = 0;
     	$scope.updateContent();
+
     };
 
     $scope.addAccount = function(event) {
@@ -45,8 +46,8 @@ app.controller('myCtrl', function($scope) {
 
 		$scope.accounts.push($scope.newAccount);
 		$scope.newAccount = {};
-		$scope.updateContent();
 
+        $('.no-accounts').hide();
         $('#addAccountModal').modal('hide');
 
     };
@@ -56,102 +57,34 @@ app.controller('myCtrl', function($scope) {
     	$('.summary').hide();
     	$('.monthly-payments').hide();
 
-        if ($scope.accounts.length > 0 && $scope.monthlyPayment != null){
-            $scope.message = "Check out your payment plan below.";
-            $('.summary').show();
-            $('.monthly-payments').show();
+        if ($scope.accounts.length == 0 && $scope.monthlyPayment != null) {
 
-            var monthlyPayments = $scope.generateMonthlyPayments();
+            $scope.loadMessage("Add an account to calculate your plan.");
 
+        } else if ($scope.accounts.length > 0){
 
-            // Update Summary info
-            var numYears = Math.floor(monthlyPayments.length/12);
-            var numMonths = monthlyPayments.length%12;
+            if ($scope.monthlyPayment === null) {
 
-            $scope.dateZeroDebt = monthlyPayments.slice(-1)[0].date;
+                $scope.loadMessage("Enter a monthly payment to calculate your plan.");
 
-            if (numYears) {
-                $scope.timeToZeroDebt = numYears == 1 ? numYears + " year" : numYears + " years";
-                $scope.timeToZeroDebt += numMonths ? " and " + numMonths + " month" : '';
-                $scope.timeToZeroDebt += numMonths <= 1 ? '' : 's';
             } else {
-                $scope.timeToZeroDebt = numMonths + " months";
-            }
 
-            // Get table and clear contents
-            var table = $('.payments-table');
-            table.empty();
+                var monthlyPayments = $scope.generateMonthlyPayments();
 
-            // Add headers and data to table
+                if (monthlyPayments === false) return false;
 
-                // Create first header row
-                var row1 = $("<tr></tr>");
+                // Update Summary info
+                $scope.updateSummaryInfo(monthlyPayments);
 
-                row1.append('<th rowspan="2">Month</th>');
+                // Update Payments table
+                //$scope.updatePaymentsTable(monthlyPayments);
 
-                // Add one cell for each account
-                for (var j = 0; j < $scope.accounts.length; j++) {
+                $scope.loadMessage("Check out your payment plan below.");
+                $('.summary').show();
+                $('.monthly-payments').show();
 
-                    row1.append('<th colspan="3">' + $scope.accounts[j].name + '</th>');
+            } 
 
-                }
-
-                row1.append('<th colspan="3">Monthly Statistics</th>');
-
-                table.append(row1);
-
-                // Create second header row
-                var row2 = $("<tr></tr>");
-
-                // Add 3 header cells for each account
-                for (var j = 0; j < $scope.accounts.length; j++) {
-
-                    row2.append('<th>Balance</th>');
-                    row2.append('<th>Interest</th>');
-                    row2.append('<th>Payment</th>');
-
-                }
-
-                // Add 3 header cells for stats
-                row2.append('<th>Total Balances</th>');
-                row2.append('<th>Total Interest</th>');
-                row2.append('<th>Total Payments</th>');
-
-                table.append(row2);
-
-                // Begin adding data rows
-                for (var j = 0; j < monthlyPayments.length; j++) {
-                    var data        = monthlyPayments[j];
-                    var dataRow     = $("<tr></tr>");
-                    var dollarSign  = '<i class="fa fa-usd" aria-hidden="true"></i>';
-                    var downArrow   = '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
-                    var upArrow     = '<i class="fa fa-arrow-up" aria-hidden="true"></i>';
-
-                    // Add Month and Year
-                    dataRow.append("<td>" + data.date + "</td>");
-
-                    // Add 3 cells for each account
-                    for (var a = 0; a < data.accounts.length; a++) {
-                        dataRow.append("<td>" + dollarSign + " " + data.accounts[a].balance.toFixed(2) + "</td>");
-                        dataRow.append("<td>" + data.accounts[a].interest.toFixed(2) + " " + upArrow + "</td>");
-                        dataRow.append("<td>" + data.accounts[a].payment.toFixed(2) + " " + downArrow + "</td>");
-                    }
-
-                    // Add 3 cells for stats
-                    dataRow.append("<td>" + data.stats.balances.toFixed(2) + "</td>");
-                    dataRow.append("<td>" + data.stats.interest.toFixed(2) + "</td>");
-                    dataRow.append("<td>" + data.stats.payments.toFixed(2) + "</td>");
-
-                    table.append(dataRow);
-                }
-
-
-    	} else if  ($scope.accountslength > 0 && $scope.monthlyPayment == null) {
-    		$scope.message = "Enter a monthly payment to calculate your plan.";
-    	} else if ($scope.accounts.length == 0 && $scope.monthlyPayment != null) {
-    		$scope.message = "Add an account to calculate your plan.";
-    	} else {
-    		$scope.message = "Add an account and enter a monthly payment to get started.";
     	}
     }
 
@@ -183,13 +116,12 @@ app.controller('myCtrl', function($scope) {
     				if (parseFloat($scope.accounts[i].apr) > parseFloat($scope.accounts[accountsByPriority[j]].apr)) {
     					// Add before, this item has a higher priority
     					accountsByPriority.splice(j, 0, i);
+                        break;
     				} else if (j == accountsByPriority.length - 1) {
     					// Add to the end (there is nothing left to compare to)
     					accountsByPriority.push(i);
-    				} else {
-    					// Contine through the loop to compare with following items
-    					continue;
-    				}
+                        break;
+    				} 
     			}
     		}
 
@@ -197,10 +129,12 @@ app.controller('myCtrl', function($scope) {
 
     	var firstRun = true;
 
+        console.log("totalBalances = " + totalBalances);
+
     	// Calculate account balance, interest, and payment each month until total debt is zero
     	while (totalBalances > 0) {
 
-    		var availableFunds 		= parseFloat($scope.monthlyPayment);
+    		var availableFunds 		= $scope.monthlyPayment;
     		var accountDetails 		= [];
     		var newTotalBalances 	= 0;
             var totalPayments       = 0;
@@ -219,7 +153,6 @@ app.controller('myCtrl', function($scope) {
 				// then calculate new balances for the following months
         		if (firstRun) {
         			balance 	= parseFloat($scope.accounts[i].balance);
-        			console.log(apr);
 					interest	= balance * (apr / 100 / 12);
         		} else {
         			prevBalance = monthlyPayments[monthlyPayments.length-1].accounts[i].balance;
@@ -244,6 +177,16 @@ app.controller('myCtrl', function($scope) {
 
         		availableFunds -= minPayment;
         	}
+
+            // Check to see if there are sufficient funds from the monthly payment to cover all min payments
+
+            if (availableFunds < 0) {
+                console.log('availableFunds = ' + Math.abs(availableFunds));
+                var min = Math.abs(availableFunds) + $scope.monthlyPayment;
+                console.log(min);
+                $scope.loadMessage("You need to pay at least $" + Math.ceil(min) + " each month to avoid any late fees. Please enter another amount.");
+                return false;  
+            }
 
         	// Begin allocating funds from highest to lowest priority account
 
@@ -321,7 +264,95 @@ app.controller('myCtrl', function($scope) {
 
     }
 
+    $scope.updateSummaryInfo = function(monthlyPayments) {
+
+        var numYears = Math.floor(monthlyPayments.length/12);
+        var numMonths = monthlyPayments.length%12;
+
+        $scope.dateZeroDebt = monthlyPayments.slice(-1)[0].date;
+
+        if (numYears) {
+            $scope.timeToZeroDebt = numYears == 1 ? numYears + " year" : numYears + " years";
+            $scope.timeToZeroDebt += numMonths ? " and " + numMonths + " month" : '';
+            $scope.timeToZeroDebt += numMonths <= 1 ? '' : 's';
+        } else {
+            $scope.timeToZeroDebt = numMonths + " months";
+        }
+
+    }
+
+    $scope.updatePaymentsTable = function(monthlyPayments) {
+
+        // Get table and clear contents
+        var table = $('.payments-table');
+        table.empty();
+
+        // Add headers and data to table
+
+        // Create first header row
+        var row1 = $("<tr></tr>");
+
+        row1.append('<th rowspan="2">Month</th>');
+
+        // Add one cell for each account
+        for (var j = 0; j < $scope.accounts.length; j++) {
+
+            row1.append('<th colspan="3">' + $scope.accounts[j].name + '</th>');
+
+        }
+
+        row1.append('<th colspan="3">Monthly Statistics</th>');
+
+        table.append(row1);
+
+        // Create second header row
+        var row2 = $("<tr></tr>");
+
+        // Add 3 header cells for each account
+        for (var j = 0; j < $scope.accounts.length; j++) {
+
+            row2.append('<th>Balance</th>');
+            row2.append('<th>Interest</th>');
+            row2.append('<th>Payment</th>');
+
+        }
+
+        // Add 3 header cells for stats
+        row2.append('<th>Total Balances</th>');
+        row2.append('<th>Total Interest</th>');
+        row2.append('<th>Total Payments</th>');
+
+        table.append(row2);
+
+        // Begin adding data rows
+        for (var j = 0; j < monthlyPayments.length; j++) {
+            var data        = monthlyPayments[j];
+            var dataRow     = $("<tr></tr>");
+            var dollarSign  = '<i class="fa fa-usd" aria-hidden="true"></i>';
+            var downArrow   = '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
+            var upArrow     = '<i class="fa fa-arrow-up" aria-hidden="true"></i>';
+
+            // Add Month and Year
+            dataRow.append("<td>" + data.date + "</td>");
+
+            // Add 3 cells for each account
+            for (var a = 0; a < data.accounts.length; a++) {
+                dataRow.append("<td>" + dollarSign + " " + data.accounts[a].balance.toFixed(2) + "</td>");
+                dataRow.append("<td>" + data.accounts[a].interest.toFixed(2) + " " + upArrow + "</td>");
+                dataRow.append("<td>" + data.accounts[a].payment.toFixed(2) + " " + downArrow + "</td>");
+            }
+
+            // Add 3 cells for stats
+            dataRow.append("<td>" + data.stats.balances.toFixed(2) + "</td>");
+            dataRow.append("<td>" + data.stats.interest.toFixed(2) + "</td>");
+            dataRow.append("<td>" + data.stats.payments.toFixed(2) + "</td>");
+
+            table.append(dataRow);
+        }
+    }
+
 	$scope.updateContent();
+    console.log($scope.monthlyPayment);
 
 });
 
