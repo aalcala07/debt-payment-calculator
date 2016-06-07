@@ -15,19 +15,28 @@ footer {
 	color: #777;
 }
 
+.message {
+	padding: 30px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.summary, .monthly-payments {
+	display: none;
+}
+
 .accounts {
 }
 .accounts-info {
-	height: 140px;
-	overflow-y: scroll;
 }
 .add-account {
 }
 .summary {
 }
-.summary .summary-description span {
-	color: green;
-	font-weight: bold;
+.payment-summary span {
+	color: #1C98F1;
+	font-weight: normal;
+	font-size: 16px;
 }
 .payments-table {
 
@@ -43,8 +52,4 @@ footer {
 }
 .payments-table .fa-arrow-up {
 	color: red;
-}
-
-.add-account input.decimal {
-	width: 100px;
 }
