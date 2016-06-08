@@ -3,6 +3,11 @@
 CSS for Debt Payment Calculator
 
 */
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 header {
 	padding-top: 30px;
 	padding-bottom: 30px;
