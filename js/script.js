@@ -4,14 +4,25 @@ Javascript for Debt Payment Calculator
 
 */
 
+// From http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
+Number.prototype.formatMoney = function(c, d, t){
+var n = this, 
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
 
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope) {
 
 	$scope.numAccounts      = 0;
 	$scope.monthlyPayment   = null;
-	$scope.newAccount       = {};
 	$scope.accounts         = [];
+    $scope.payment          = 0;
     $scope.timeToZeroDebt;
     $scope.amountSaved;
     $scope.timeSaved;
@@ -21,17 +32,66 @@ app.controller('myCtrl', function($scope) {
     $scope.startingMessage = "Add an account and enter a monthly payment to get started.";
 
     $scope.loadMessage = function(message) {
+
         if (message == null) {
             message = $scope.startingMessage;
         }
+
         $scope.message = message;
     }
 
     $scope.loadMessage();
 
+    $scope.inputDecimal = function(event, position) {
+        var number,
+            input = String.fromCharCode(event.keyCode),
+            controlKeys = [8,9,37,38,39,40]; //tab
+
+        if (input.match(/[0-9]/)) {
+
+            //remove decimal and commas and append input, calculate position
+            number = event.target.value.replace(/[.,$]/g, "") + input;
+            number = number.replace(/^[0]+/g, "");
+            number = $scope.padNumber(number, position + 1);
+
+            if (event.target.hasAttribute('maxlength') && number.length > event.target.maxLength) {
+                number = number.slice(1);
+            }
+
+            position = number.length - position;
+
+            // re-add decimal
+            number = [number.slice(0, position), ".", number.slice(position)].join('');
+
+            number = parseFloat(number).formatMoney();
+
+            // change value of input field
+            event.target.value = number;
+            event.preventDefault();
+            
+        } else if (controlKeys.indexOf(event.keyCode) < 0) {
+            // Don't enter any value
+            event.preventDefault();
+        }
+    }
+
+    $scope.padNumber = function(num, length) {
+
+        while (num.length < length) {
+            num = "0" + num;
+        }
+
+        return num;
+    }
+
+    $scope.stringToFloat = function(str) {
+        return parseFloat(str.replace(',', ''));
+    }
+
+
     $scope.calculate = function(event) {
 
-        $scope.monthlyPayment   = parseFloat($scope.payment);
+        $scope.monthlyPayment   = $scope.stringToFloat($('input[name="monthlyPayment"]').val());
         $scope.totalPayments    = 0;
         $scope.totalInterest    = 0;
     	$scope.updateContent();
@@ -39,13 +99,14 @@ app.controller('myCtrl', function($scope) {
     };
 
     $scope.addAccount = function(event) {
-    	var name 	= $scope.newAccount.name,
-    		balance = parseFloat($scope.newAccount.balance),
-    		apr		= parseFloat($scope.newAccount.apr),
-    		message = "";
 
-		$scope.accounts.push($scope.newAccount);
-		$scope.newAccount = {};
+        var account = {
+            name    : $('input[name="accountName"]').val(),
+            balance : $scope.stringToFloat($('input[name="accountBalance"]').val()),
+            apr     : $scope.stringToFloat($('input[name="accountApr"]').val()) * 100
+        };
+
+		$scope.accounts.push(account);
 
         $('.no-accounts').hide();
         $('#addAccountModal').modal('hide');
@@ -354,5 +415,12 @@ app.controller('myCtrl', function($scope) {
 	$scope.updateContent();
     console.log($scope.monthlyPayment);
 
+});
+
+app.filter("formatMoney", function(){
+   return function(input){
+      // Your logic
+      return input.formatMoney(); 
+   }
 });
 

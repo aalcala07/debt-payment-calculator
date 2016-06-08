@@ -125,11 +125,13 @@ h1, h2, h3, h4, h5, h6 {
 			<form class="controls" ng-submit="calculate($event)">
 
 				<div class="form-group">
-					<label>Enter amount to pay each month:</label>
-					<input type="text" class="form-control" required ng-model="payment" autofocus tabindex="1">
+					<label class="text-center col-xs-12">Enter amount to pay each month:</label>
+					<span class="monthlyPayment col-xs-12">$
+						<input type="text" name="monthlyPayment" required ng-keydown="inputDecimal($event, 2)" maxlength="12" autofocus tabindex="1" value="0.00">
+					</span>
 				</div> 
 
-				<input type="submit" class="btn btn-info col-xs-12" value="Calculate"> 
+				<input type="submit" class="btn btn-info col-xs-12" id="calculate" value="Calculate"> 
 
 			</form>
 
@@ -152,11 +154,11 @@ h1, h2, h3, h4, h5, h6 {
 					<table class="table table-condensed table-striped" ng-cloak>
 						<tr>
 							<th width="80%">Name</th>
-							<th width="20%">Balance (APR)</th>
+							<th width="20%" align="right">Balance (APR)</th>
 						</tr>
 						<tr ng-repeat="a in accounts track by $index">
 							<td>{{ a.name }}</td>
-							<td align="right">${{ a.balance }} ({{ a.apr }}%)</td>
+							<td align="right">${{ a.balance | formatMoney }} ({{ a.apr }}%)</td>
 						</tr>
 					</table>
 
@@ -180,19 +182,19 @@ h1, h2, h3, h4, h5, h6 {
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Account Name </label>
 								<div class="col-sm-9">
-									<input type="text" class="form-control" required name="account-name" ng-model="newAccount.name" placeholder="Account Name" tabindex="2">
+									<input type="text" class="form-control" required name="accountName" ng-model="newAccount.name" placeholder="Account Name" tabindex="2">
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Balance </label>
 								<div class="col-sm-9">
-									<input type="text" class="form-control decimal" required name="account-balance" ng-model="newAccount.balance" tabindex="3">
+									<input type="text" class="form-control text-right" required name="accountBalance" tabindex="3" ng-keydown="inputDecimal($event, 2)" autofocus tabindex="1" maxlength="13" value="0.00">
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-3 control-label">APR </label>
 								<div class="col-sm-9">
-									<input type="text" class="form-control decimal" required name="account-interest-rate" ng-model="newAccount.apr" tabindex="4">
+									<input type="text" class="form-control text-right" required name="accountApr" tabindex="4" ng-keydown="inputDecimal($event, 2)" autofocus tabindex="1" value="0.00" maxlength="3">
 								</div>
 							</div>
 							<div class="form-group">
