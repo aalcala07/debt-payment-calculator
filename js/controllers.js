@@ -1,35 +1,23 @@
 /*
 
-Javascript for Debt Payment Calculator
+AngularJS Controllers for Debt Payment Calculator
 
 */
 
-// From http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
-Number.prototype.formatMoney = function(c, d, t){
-var n = this, 
-    c = isNaN(c = Math.abs(c)) ? 2 : c, 
-    d = d == undefined ? "." : d, 
-    t = t == undefined ? "," : t, 
-    s = n < 0 ? "-" : "", 
-    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
-    j = (j = i.length) > 3 ? j % 3 : 0;
-   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
- };
-
-var app = angular.module('myApp', []);
-app.controller('myCtrl', function($scope) {
+app.controller('mainController', ['$scope', function($scope) {
 
 	$scope.numAccounts      = 0;
 	$scope.monthlyPayment   = null;
 	$scope.accounts         = [];
     $scope.payment          = 0;
-    $scope.timeToZeroDebt;
-    $scope.amountSaved;
-    $scope.timeSaved;
-    $scope.totalPayments;
-    $scope.totalInterest;
-    $scope.dateZeroDebt;
-    $scope.startingMessage = "Add an account and enter a monthly payment to get started.";
+    $scope.timeToZeroDebt   = "";
+    $scope.amountSaved      = 0;
+    $scope.timeSaved        = 0;
+    $scope.totalPayments    = 0;
+    $scope.totalInterest    = 0;
+    $scope.dateZeroDebt     = "";
+    $scope.startingMessage  = "Add an account and enter a monthly payment to get started.";
+
 
     $scope.loadMessage = function(message) {
 
@@ -415,12 +403,4 @@ app.controller('myCtrl', function($scope) {
 	$scope.updateContent();
     console.log($scope.monthlyPayment);
 
-});
-
-app.filter("formatMoney", function(){
-   return function(input){
-      // Your logic
-      return input.formatMoney(); 
-   }
-});
-
+}]);
