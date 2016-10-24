@@ -1,4 +1,4 @@
-/* 
+/*
 
 CSS for Debt Payment Calculator
 
@@ -92,4 +92,98 @@ input[name="monthlyPayment"] {
 }
 .payments-table .fa-arrow-up {
 	color: red;
+}
+
+html, body, #main {
+	height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #1C98F1;
+}
+
+.sidebar {
+	background: #536F82;
+	color: #fff;
+	height: 100%;
+	position: fixed;
+}
+
+.sidebar h1, .sidebar h2, .sidebar h3 {
+	color: #fff;
+}
+
+.sidebar label {
+	font-weight: normal;
+}
+
+.sidebar .app-title {
+	margin-bottom: 30px;
+}
+
+.sidebar a {
+	color: #C0F5FF;
+}
+
+.app-info {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	padding: 30px;
+	width: 100%;
+}
+
+.content {
+	padding: 0 20px;
+}
+
+.message {
+    padding: 30px;
+    font-size: 18px;
+    text-align: center;
+    margin: 15px 0px;
+    background: #C0F5FF;
+    border-radius: 5px;
+    border: 1px solid #89D8E6;
+    color: #43B1C5;
+}
+
+#add-account {
+	margin-left: 10px;
+	margin-top: -4px;
+}
+
+.accounts-info table th {
+	background: #5585A5;
+	color: #fff;
+	border: 0;
+	font-weight: normal;
+}
+
+.payment-stats th {
+	background: #777;
+}
+
+.payment-stats table {
+	border: 1px solid #5585A5;
+}
+.payment-stats table tr td {
+	border: 0;
+	color: #1BACC7;
+	padding: 8px 15px;
+}
+
+.payment-stats table tr td:first-child {
+	background: #5585A5;
+	color: #fff;
+}
+
+.no-accounts {
+	padding: 30px;
+	font-size: 16px;
+	border: 1px solid #e0e0e0;
+}
+
+.content h3 {
+	margin-bottom: 20px;
 }
