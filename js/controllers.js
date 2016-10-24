@@ -4,7 +4,7 @@ AngularJS Controllers for Debt Payment Calculator
 
 */
 
-app.controller('mainController', ['$scope', function($scope) {
+app.controller('mainController', ['$scope', '$filter', function($scope, $filter) {
 
 	$scope.numAccounts      = 0;
 	$scope.monthlyPayment   = null;
@@ -51,12 +51,12 @@ app.controller('mainController', ['$scope', function($scope) {
             // re-add decimal
             number = [number.slice(0, position), ".", number.slice(position)].join('');
 
-            number = parseFloat(number).formatMoney();
+            number = $filter('currency')(parseFloat(number),'');
 
             // change value of input field
             event.target.value = number;
             event.preventDefault();
-            
+
         } else if (controlKeys.indexOf(event.keyCode) < 0) {
             // Don't enter any value
             event.preventDefault();
@@ -132,7 +132,7 @@ app.controller('mainController', ['$scope', function($scope) {
                 $('.summary').show();
                 $('.monthly-payments').show();
 
-            } 
+            }
 
     	}
     }
@@ -144,7 +144,7 @@ app.controller('mainController', ['$scope', function($scope) {
             months              = [undefined, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     		monthlyPayments 	= [],
 			date 				= new Date(),
-			currentMonth 		= date.getMonth() + 1,   
+			currentMonth 		= date.getMonth() + 1,
 			currentYear			= date.getFullYear(),
 			totalBalances		= 0,
 			accountsByPriority  = [],
@@ -170,11 +170,11 @@ app.controller('mainController', ['$scope', function($scope) {
     					// Add to the end (there is nothing left to compare to)
     					accountsByPriority.push(i);
                         break;
-    				} 
+    				}
     			}
     		}
 
-    	}   
+    	}
 
     	var firstRun = true;
 
@@ -215,7 +215,7 @@ app.controller('mainController', ['$scope', function($scope) {
 
         		newTotalBalances += balance;
 
-				minPayment = $scope.calculateMinimumPayment(interest, balance); 
+				minPayment = $scope.calculateMinimumPayment(interest, balance);
 
         		accountDetails[i] = {
         			'balance'		: balance,
@@ -234,7 +234,7 @@ app.controller('mainController', ['$scope', function($scope) {
                 var min = Math.abs(availableFunds) + $scope.monthlyPayment;
                 console.log(min);
                 $scope.loadMessage("You need to pay at least $" + Math.ceil(min) + " each month to avoid any late fees. Please enter another amount.");
-                return false;  
+                return false;
             }
 
         	// Begin allocating funds from highest to lowest priority account
@@ -250,7 +250,7 @@ app.controller('mainController', ['$scope', function($scope) {
  					payment = balance;
  				}
 
- 				// Reduce the available funds 
+ 				// Reduce the available funds
  				availableFunds -= payment - minPayment;
 
  				// Set the payment and adjust the balance

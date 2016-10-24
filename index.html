@@ -58,7 +58,7 @@
 						</tr>
 						<tr ng-repeat="a in accounts track by $index">
 							<td>{{ a.name }}</td>
-							<td align="right">${{ a.balance | formatMoney }} ({{ a.apr }}%)</td>
+							<td align="right">${{ a.balance | currency:'' }} ({{ a.apr }}%)</td>
 						</tr>
 					</table>
 
@@ -167,7 +167,6 @@
     <script src="https://code.angularjs.org/1.4.9/angular-route.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
-    <script src="js/filters.js"></script>
 
 </body>
 </html>
