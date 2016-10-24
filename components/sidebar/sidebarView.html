@@ -1,0 +1,24 @@
+<div class="col-md-3 sidebar">
+
+  <h2 class="text-center app-title">Debt Payment Calculator</h2>
+
+  <!-- Calculator controls -->
+  <form class="controls" ng-submit="$ctrl.resultsService.test()">
+
+    <div class="form-group">
+      <label class="text-center col-xs-12">Enter amount to pay each month:</label>
+      <span class="monthlyPayment col-xs-12">$
+        <input type="text" required ng-bind="$ctrl.monthlyPayment" maxlength="12" autofocus tabindex="1">
+      </span>
+    </div>
+
+    <input type="submit" class="btn btn-info col-xs-12" id="calculate" value="Calculate">
+
+  </form>
+
+  <p>TEST: <span ng-bind="$parent.test2"></span></p>
+  <div class="app-info">
+    <p class="text-center">Debt Payment Calculator <br>by Anthony Alcala<br> <a href="http://aalcala.com " target="_blank">aalcala.com</a></p>
+  </div>
+
+</div><!-- end .sidebar -->

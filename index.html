@@ -13,43 +13,23 @@
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
-		<script src="https://code.angularjs.org/1.4.9/angular-route.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+		<script src="https://code.angularjs.org/1.5.8/angular-route.js"></script>
 		<script src="js/app.js"></script>
 		<script src="js/controllers.js"></script>
-		
+		<script src="components/sidebar/sidebarController.js"></script>
+
 </head>
 
 <body>
 
-	<div id="main" ng-controller="mainController">
+	<div id="main" ng-controller="mainController as $ctrl">
 
-		<div class="col-md-3 sidebar">
-
-			<h2 class="text-center app-title">Debt Payment Calculator</h2>
-
-			<!-- Calculator controls -->
-			<form class="controls" ng-submit="calculate($event)">
-
-				<div class="form-group">
-					<label class="text-center col-xs-12">Enter amount to pay each month:</label>
-					<span class="monthlyPayment col-xs-12">$
-						<input type="text" name="monthlyPayment" required ng-keydown="inputDecimal($event, 2)" maxlength="12" autofocus tabindex="1" value="0.00">
-					</span>
-				</div>
-
-				<input type="submit" class="btn btn-info col-xs-12" id="calculate" value="Calculate">
-
-			</form>
-
-			<div class="app-info">
-				<p class="text-center">Debt Payment Calculator <br>by Anthony Alcala<br> <a href="http://aalcala.com " target="_blank">aalcala.com</a></p>
-			</div>
-
-		</div><!-- end .sidebar -->
+		<sidebar data-monthly-payment="$ctrl.monthlyPayment" data-test="$ctrl.test"></sidebar>
 
 		<div class="content col-md-9 col-md-offset-3">
 
+			<p>Results: {{$scope.resultsService.data}}</p>
 			<div class="message" ng-bind="message"></div>
 
 			<div class="accounts">
